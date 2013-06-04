@@ -1,3 +1,8 @@
+Fork Modifications
+------------------
+A new command-line argument has been made available, --variable, which outputs image urls as LessCSS variables instead of paths.
+Here at OkCupid Labs, we've got our own cachebusting script that we plan on integrating with Glue.
+
 Glue
 ====
 

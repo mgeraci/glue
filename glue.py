@@ -59,6 +59,7 @@ DEFAULT_SETTINGS = {
     'no_img': False,
     'cachebuster': False,
     'cachebuster-filename': False,
+    'use_variable': False,
     'global_template':
         ('%(all_classes)s{background-image:url(\'%(sprite_url)s\');'
          'background-repeat:no-repeat}\n'),
@@ -882,6 +883,12 @@ class Sprite(object):
         class_names = ',\n'.join(class_names)
 
         # add the global style for all the sprites for less bloat
+
+        # if we're using --variable, we don't want quotes around our image url variable
+        if self.config.use_variable:
+            self.config.global_template = ('%(all_classes)s{background-image:url(%(sprite_url)s);'
+         'background-repeat:no-repeat}\n')
+
         template = self.config.global_template.decode('unicode-escape')
         css_file.write(template % {'all_classes': class_names,
                                    'sprite_url': self.image_url()})
@@ -1002,6 +1009,9 @@ class Sprite(object):
 
         if self.config.cachebuster:
             url = "%s?%s" % (url, self.hash[:6])
+
+        if self.config.use_variable:
+            url = "@%s" % url.replace('/', '--').replace('.', '-')
 
         return url
 
@@ -1403,6 +1413,8 @@ def main():
             help="don't genereate CSS files.")
     group.add_option("--no-img", dest="no_img", action="store_true",
             help="don't genereate IMG files.")
+    group.add_option("--variable", dest="use_variable", action="store_true",
+            help="output a variable to the stylesheet instead of an image path.")
 
     parser.add_option_group(group)
 
@@ -1485,6 +1497,10 @@ def main():
     if options.cachebuster and options.cachebuster_filename:
         parser.error("You can't use --cachebuster and "
                      "--cachebuster-filename at the same time.")
+
+    if options.use_variable and not options.less:
+        parser.error("You can't use --variable "
+                     "without using --less too.")
 
     if not len(args):
         parser.error("You must provide the folder containing the sprites.")
