@@ -3,6 +3,9 @@ Fork Modifications
 A new command-line argument has been made available, --variable, which outputs image urls as LessCSS variables instead of paths.
 Here at OkCupid Labs, we've got our own cachebusting script that we plan on integrating with Glue.
 
+In addition, an option to create the stylesheet as a sass (scss) file: --scss. Like the --less command, the contents of the
+stylesheet are the same, but with a different extension.
+
 Glue
 ====
 
